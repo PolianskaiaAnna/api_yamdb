@@ -8,9 +8,6 @@ from reviews.validators import validation_year
 User = get_user_model()
 
 
-
-
-
 class CategoryAndGenreModel(models.Model):
     """Абстрактная модель. Добавляет название и слаг."""
 
