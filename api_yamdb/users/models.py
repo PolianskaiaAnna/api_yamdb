@@ -19,4 +19,6 @@ class CustomUser(AbstractUser):
     first_name = models.CharField('Имя', blank=True, max_length=150)
     last_name = models.CharField('Фамилия', blank=True, max_length=150)
     bio = models.TextField('Биография', blank=True,)
-    role = models.CharField('Роль', choices=USER_ROLES, default=USER_ROLES[0])
+    role = models.CharField(
+        'Роль', choices=USER_ROLES, default=USER_ROLES[0][1], max_length=150
+    )
