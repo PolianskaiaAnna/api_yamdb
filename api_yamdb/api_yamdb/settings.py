@@ -22,7 +22,10 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'users.apps.UsersConfig'
+    'users.apps.UsersConfig',
+    'rest_framework',
+    'reviews',
+    'api',
 ]
 
 MIDDLEWARE = [
@@ -103,3 +106,7 @@ USE_TZ = True
 STATIC_URL = '/static/'
 
 STATICFILES_DIRS = ((BASE_DIR / 'static/'),)
+
+LENG_SLUG = 50
+LENG_MAX = 256
+LENG_CUT = 30
