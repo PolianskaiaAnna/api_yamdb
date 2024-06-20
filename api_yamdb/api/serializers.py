@@ -18,4 +18,4 @@ class GenreSerializer(serializers.ModelSerializer):
     class Meta:
         model = Genre
         exclude = ('id',)
-        lookup_fiald = 'slug'
+        lookup_field = 'slug'
