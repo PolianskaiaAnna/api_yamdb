@@ -1,47 +1,54 @@
 from rest_framework.views import APIView
 from rest_framework.response import Response
-from rest_framework import status
+from rest_framework import generics, status, viewsets
 from rest_framework.permissions import AllowAny
-from rest_framework_simplejwt.tokens import AccessToken
-from django.shortcuts import get_object_or_404
-from django.core.mail import send_mail
-from django.conf import settings
-from django.contrib.auth.tokens import default_token_generator
-from reviews.models import User
-from api.serializers import SignupSerializer
+from users.serializers import SignupSerializer, TokenSerializer, UserSerializer
+
+
+# class SignUpView(generics.CreateAPIView):
+#     """
+#     Класс, описывающий регистрацию пользователя и отправку кода подтверждения
+#     """
+#     permission_classes = [AllowAny]
+#     serializer_class = SignupSerializer
+
+#     def perform_create(self, request, *args, **kwargs):
+#         serializer = self.get_serializer(data=request.data)
+#         serializer.is_valid(raise_exception=True)
+#         token = serializer.save()
+#         return Response(token, status=status.HTTP_200_OK)
+
 
 class SignUpView(APIView):
-    """Класс, описывающий регистрацию пользователя и отправку кода подтверждения"""
     permission_classes = [AllowAny]
-    def post(self, request):
+    
+    def post(self, request, *args, **kwargs):
         serializer = SignupSerializer(data=request.data)
         if serializer.is_valid():
-            serializer.save()
-            username = request.data.get('username')
-            email = request.data.get('email')
-            user = get_object_or_404(User, username=username)
-            confirmation_code = default_token_generator.make_token(user)
+            user = serializer.save()
+            return Response(serializer.data, status=status.HTTP_200_OK)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+    
 
-            send_mail(
-                subject='Код активации для проекта YAMDB',
-                message=(
-                    f'Ваш код для получения токена.\n'
-                    f'confirmation code: {confirmation_code}\n'
-                    f'username: {username}'
-                ),
-                from_email='admin@yamdb.yamdb',
-                recipient_list=[email],
-                fail_silently=False,
-            )
-        return Response(serializer.data, status=status.HTTP_201_CREATED)
+class TokenView(generics.CreateAPIView):
+    """Класс, описывающий создание токена"""
+    serializer_class = TokenSerializer
 
-        
+    def perform_create(self, request, *args, **kwargs):
+        serializer = self.get_serializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        token = serializer.save()
+        return Response(token, status=status.HTTP_200_OK)
 
-# class TokenView(ApiView)
 
-# token = AccessToken.for_user(user)
-#     return Response({'token': f'{token}'}, status=status.HTTP_200_OK)
-
-class UsersViewSet(ModelViewSet):
-    queryset = User.objects.all()
+class UsersViewSet(viewsets.ModelViewSet):
+    """Класс, описывающий запросы к модели User"""
     serializer_class = UserSerializer
+
+
+
+# payload = {
+#             'username': user.username,
+#             'exp': timezone.now() + timedelta(days=30)
+#         }
+# token = jwt.encode(payload, settings.SECRET_KEY, algorithm='HS256')
