@@ -1,9 +1,6 @@
-from datetime import datetime
-
-from django.shortcuts import get_object_or_404
 from rest_framework import serializers
 
-from reviews.models import Category
+from reviews.models import Category, Genre
 
 
 class CategorySerializer(serializers.ModelSerializer):
@@ -13,3 +10,12 @@ class CategorySerializer(serializers.ModelSerializer):
         model = Category
         exclude = ('id',)
         lookup_field = 'slug'
+
+
+class GenreSerializer(serializers.ModelSerializer):
+    """Сериализатор для жанров произведений"""
+
+    class Meta:
+        model = Genre
+        exclude = ('id',)
+        lookup_fiald = 'slug'
