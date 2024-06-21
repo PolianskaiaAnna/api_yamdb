@@ -110,3 +110,13 @@ STATICFILES_DIRS = ((BASE_DIR / 'static/'),)
 LENG_SLUG = 50
 LENG_MAX = 256
 LENG_CUT = 30
+# Email settings
+EMAIL_BACKEND = 'django.core.mail.backends.filebased.EmailBackend'
+EMAIL_FILE_PATH = BASE_DIR / 'sent_emails'
+
+# Autentication
+REST_FRAMEWORK = {
+    'DEFAULT_AUTHENTICATION_CLASSES': (
+        'rest_framework_simplejwt.authentication.JWTAuthentication',
+    )
+}
