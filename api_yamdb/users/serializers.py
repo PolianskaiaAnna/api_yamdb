@@ -115,17 +115,19 @@ class TokenSerializer(serializers.Serializer):
 
 class UserSerializer(serializers.ModelSerializer):
     """Класс, описывающий сериализатор для модели User"""
+
     class Meta:
         model = User
-        fields = '__all__'
+        fields = (
+            'username', 'email', 'first_name', 'last_name', 'bio', 'role'
+        )
 
-    def update(self, instance, validated_data):
-        instance.first_name = validated_data.get(
-            'first_name', instance.first_name
-        )
-        instance.last_name = validated_data.get(
-            'last_name', instance.last_name
-        )
-        instance.email = validated_data.get('email', instance.email)
-        instance.save()
-        return instance
+    def validate_username(self, data):
+        """
+        Проверка, что username соответствует паттерну
+        """
+        if not re.match(r'^[\w.@+-]+\Z', data):
+            raise serializers.ValidationError(
+                'Юзернейм содержит недопустимые символы.'
+            )
+        return data
