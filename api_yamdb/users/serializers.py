@@ -124,7 +124,7 @@ class UserSerializer(serializers.ModelSerializer):
 
     def validate_username(self, data):
         """
-        Проверка, что username соответствует паттерну
+        Проверка, что юзернейм соответствует заданному составу
         """
         if not re.match(r'^[\w.@+-]+\Z', data):
             raise serializers.ValidationError(
