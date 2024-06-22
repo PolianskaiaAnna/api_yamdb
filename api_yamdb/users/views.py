@@ -38,6 +38,38 @@ class TokenView(generics.CreateAPIView):
         return Response(token, status=status.HTTP_200_OK)
 
 
+class UserProfileAPIView(generics.RetrieveUpdateAPIView):
+    """
+    API view для просмотра и обновления профиля пользователя.
+    """
+    serializer_class = UserSerializer
+    permission_classes = [IsAuthenticated]
+
+    def get_object(self):
+        return self.request.user
+
+    def patch(self, request, *args, **kwargs):
+        """
+        Обновление профиля пользователя.
+        """
+        user = self.get_object()
+        if 'role' in request.data:
+            return Response({'error': 'Нельзя менять роль'},
+                            status=status.HTTP_400_BAD_REQUEST)
+        serializer = self.get_serializer(user, data=request.data, partial=True)
+        serializer.is_valid(raise_exception=True)
+        serializer.save()
+        return Response(serializer.data, status=status.HTTP_200_OK)
+
+    def get(self, request, *args, **kwargs):
+        """
+        Получение профиля пользователя.
+        """
+        user = self.get_object()
+        serializer = self.get_serializer(user)
+        return Response(serializer.data, status=status.HTTP_200_OK)
+
+
 class UsersViewSet(viewsets.ModelViewSet):
     """Класс, описывающий запросы к модели User"""
     queryset = User.objects.all().order_by('username')
@@ -46,42 +78,7 @@ class UsersViewSet(viewsets.ModelViewSet):
     filter_backends = [filters.SearchFilter]
     search_fields = ['username']
     pagination_class = PageNumberPagination
-
-    def get_permissions(self):
-        """Функция определяет разрешения доступа для разных типов запросов"""
-        if self.action in [
-            'list', 'create', 'retrieve', 'partial_update', 'update', 'destroy'
-        ]:
-            permission_classes = [IsAdmin]
-        elif self.action == 'profile':
-            permission_classes = [IsAuthenticated]
-        else:
-            permission_classes = [AllowAny]
-        return [permission() for permission in permission_classes]
-
-    def get_queryset(self):
-        if self.action == 'profile':
-            return User.objects.filter(username=self.request.user.username)
-        return super().get_queryset()
-
-    def profile(self, request):
-        """
-        Функция позволяет пользователю просматривать и обновлять свой профиль
-        """
-        if request.method == 'PATCH':
-            user = get_object_or_404(User, username=request.user.username)
-            serializer = UserSerializer(user, data=request.data, partial=True)
-            if serializer.is_valid():
-                serializer.save(email=user.email, role=user.role)
-                return Response(serializer.data, status=status.HTTP_200_OK)
-            return Response(serializer.errors,
-                            status=status.HTTP_400_BAD_REQUEST)
-        serializer = self.get_serializer(request.user)
-        return Response(serializer.data)
-
-    def update(self, request, *args, **kwargs):
-        """Функция обрабатывает PUT-запросы для обновления профиля"""
-        return Response(status=status.HTTP_405_METHOD_NOT_ALLOWED)
+    permission_classes = [IsAdmin]
 
     def destroy(self, request, *args, **kwargs):
         """
@@ -103,10 +100,14 @@ class UsersViewSet(viewsets.ModelViewSet):
             return Response(serializer.data, status=status.HTTP_200_OK)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
+    def update(self, request, *args, **kwargs):
+        """Функция обрабатывает PUT-запросы для обновления профиля"""
+        return Response(status=status.HTTP_405_METHOD_NOT_ALLOWED)
+
     def list(self, request, *args, **kwargs):
         """
         Функция обрабатывает GET-запросы для получения
-        списка всех пользователей
+        списка всех пользователей с учетом пагинации
         """
         queryset = self.filter_queryset(self.get_queryset())
         page = self.paginate_queryset(queryset)
