@@ -44,6 +44,7 @@ class UserProfileAPIView(generics.RetrieveUpdateAPIView):
     """
     serializer_class = UserSerializer
     permission_classes = [IsAuthenticated]
+    http_method_names = ["get", "patch"]
 
     def get_object(self):
         return self.request.user
@@ -61,14 +62,6 @@ class UserProfileAPIView(generics.RetrieveUpdateAPIView):
         serializer.save()
         return Response(serializer.data, status=status.HTTP_200_OK)
 
-    def get(self, request, *args, **kwargs):
-        """
-        Получение профиля пользователя.
-        """
-        user = self.get_object()
-        serializer = self.get_serializer(user)
-        return Response(serializer.data, status=status.HTTP_200_OK)
-
 
 class UsersViewSet(viewsets.ModelViewSet):
     """Класс, описывающий запросы к модели User"""
@@ -79,40 +72,4 @@ class UsersViewSet(viewsets.ModelViewSet):
     search_fields = ['username']
     pagination_class = PageNumberPagination
     permission_classes = [IsAdmin]
-
-    def destroy(self, request, *args, **kwargs):
-        """
-        Функция обрабатываает DELETE-запросы на удаление профиля пользователя
-        """
-        user = get_object_or_404(User, username=request.user.username)
-        user.delete()
-        return Response(status=status.HTTP_204_NO_CONTENT)
-
-    def partial_update(self, request, *args, **kwargs):
-        """
-        Функция обрабатываает PATCH-запросы на частичное
-        изменение профиля пользователя
-        """
-        user = get_object_or_404(User, username=self.kwargs.get('username'))
-        serializer = self.get_serializer(user, data=request.data, partial=True)
-        if serializer.is_valid():
-            serializer.save()
-            return Response(serializer.data, status=status.HTTP_200_OK)
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-
-    def update(self, request, *args, **kwargs):
-        """Функция обрабатывает PUT-запросы для обновления профиля"""
-        return Response(status=status.HTTP_405_METHOD_NOT_ALLOWED)
-
-    def list(self, request, *args, **kwargs):
-        """
-        Функция обрабатывает GET-запросы для получения
-        списка всех пользователей с учетом пагинации
-        """
-        queryset = self.filter_queryset(self.get_queryset())
-        page = self.paginate_queryset(queryset)
-        if page is not None:
-            serializer = self.get_serializer(page, many=True)
-            return self.get_paginated_response(serializer.data)
-        serializer = self.get_serializer(queryset, many=True)
-        return Response({'results': serializer.data})
+    http_method_names = ["get", "post", "patch", "delete"]
