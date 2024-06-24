@@ -5,16 +5,17 @@ from api.serializers import (CategorySerializer,
                              GenreSerializer,
                              TitleReadSerializer,
                              TitleWriteSerializer)
+from .mixins import CreateListDestroyViewSet
 
 
-class CategoryViewSet(viewsets.ModelViewSet):
+class CategoryViewSet(CreateListDestroyViewSet):
     """Вьюсет для категорий."""
 
     queryset = Category.objects.all()
     serializer_class = CategorySerializer
 
 
-class GenreViewSet(viewsets.ModelViewSet):
+class GenreViewSet(CreateListDestroyViewSet):
     """Вьюсет для жанров."""
 
     queryset = Genre.objects.all()
