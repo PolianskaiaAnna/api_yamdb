@@ -10,7 +10,7 @@ class CreateListDestroyViewSet(
     mixins.DestroyModelMixin,
     viewsets.GenericViewSet
 ):
-    """Миксин для Category/Genre ViewSet."""
+    """Миксин Вьюсет для произведений и жанров."""
     permission_classes = (IsOwnerOrReadOnly,)
     filter_backends = [filters.SearchFilter]
     pagination_class = PageNumberPagination
