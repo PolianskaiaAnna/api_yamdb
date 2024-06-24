@@ -37,6 +37,10 @@ class IsAuthenticated(permissions.BasePermission):
 
 
 class IsOwnerOrReadOnly(permissions.BasePermission):
+    """
+    Разрешение, дающее доступ к редактированию только
+    автору контента или админу
+    """
     def has_permission(self, request, view):
         return (
             request.method in permissions.SAFE_METHODS
