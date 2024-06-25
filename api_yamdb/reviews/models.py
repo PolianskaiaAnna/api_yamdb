@@ -3,7 +3,7 @@ from django.conf import settings
 from django.core.validators import validate_slug
 from django.db import models
 
-from reviews.validators import validation_year
+from reviews.validators import validation_year, validation_score
 
 User = get_user_model()
 
@@ -86,3 +86,65 @@ class Title(models.Model):
 
     def __str__(self):
         return self.name
+
+
+class Review(models.Model):
+    """Модель отзыва."""
+
+    title = models.ForeignKey(
+        Title,
+        verbose_name='Произведение',
+        on_delete=models.CASCADE,
+        related_name='reviews',
+    )
+    text = models.TextField('Текст отзыва')
+    author = models.ForeignKey(
+        User,
+        on_delete=models.CASCADE,
+        related_name='reviews',
+    )
+    score = models.PositiveIntegerField(
+        'Оценка',
+        validators=(validation_score,),
+    )
+    pub_date = models.DateField(
+        'Дата публикации',
+        auto_now_add=True,
+    )
+
+    class Meta:
+        verbose_name = 'Отзыв'
+        verbose_name_plural = 'Отзывы'
+        ordering = ('-pub_date',)
+        unique_together = ['title_id', 'author_id']
+
+    def __str__(self):
+        return self.text[:settings.LENG_CUT]
+
+
+class Comment(models.Model):
+    """Модель комментария."""
+
+    review = models.ForeignKey(
+        Review,
+        on_delete=models.CASCADE,
+        related_name='comments',
+    )
+    text = models.TextField()
+    author = models.ForeignKey(
+        User,
+        on_delete=models.CASCADE,
+        related_name='comments',
+    )
+    pub_date = models.DateField(
+        'Дата публикации',
+        auto_now_add=True,
+    )
+
+    class Meta:
+        verbose_name = 'Комментарий'
+        verbose_name_plural = 'Комментарии'
+        ordering = ('-pub_date',)
+
+    def __str__(self):
+        return self.text[:settings.LENG_CUT]
