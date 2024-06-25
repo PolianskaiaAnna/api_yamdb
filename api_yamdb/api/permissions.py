@@ -4,7 +4,7 @@ from rest_framework import permissions
 class IsAuthorOrModeratorOrAdmin(permissions.BasePermission):
     """
     Пермишен, который разрешает доступ на просмотр всем пользователям,
-    но ограничивает изменение только авторам, модераторам и администраторам.
+    но разрешает изменение только авторам, модераторам и администраторам.
     """
 
     def has_permission(self, request, view):
