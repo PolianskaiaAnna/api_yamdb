@@ -87,6 +87,7 @@ class Title(models.Model):
     def __str__(self):
         return self.name
 
+
 class Review(models.Model):
     """Модель отзыва."""
 
@@ -115,9 +116,11 @@ class Review(models.Model):
         verbose_name = 'Отзыв'
         verbose_name_plural = 'Отзывы'
         ordering = ('-pub_date',)
+        unique_together = ['title_id', 'author_id']
 
     def __str__(self):
         return self.text[:settings.LENG_CUT]
+
 
 class Comment(models.Model):
     """Модель комментария."""

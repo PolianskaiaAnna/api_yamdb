@@ -1,6 +1,5 @@
 from django.contrib.auth import get_user_model
 from rest_framework import filters, generics, status, viewsets
-from rest_framework.generics import get_object_or_404
 from rest_framework.pagination import PageNumberPagination
 from rest_framework.permissions import AllowAny
 from rest_framework.response import Response
@@ -20,7 +19,7 @@ class SignUpView(APIView):
         """Функция обрабатывает POST-запрос при регистрации пользователя"""
         serializer = SignupSerializer(data=request.data)
         if serializer.is_valid():
-            user = serializer.save()
+            serializer.save()
             return Response(serializer.data, status=status.HTTP_200_OK)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
