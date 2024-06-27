@@ -1,6 +1,3 @@
-from datetime import datetime
-
-from django.db.models import Avg
 from django.shortcuts import get_object_or_404
 from rest_framework import serializers
 
@@ -28,7 +25,7 @@ class GenreSerializer(serializers.ModelSerializer):
 class TitleReadSerializer(serializers.ModelSerializer):
     """Сериализатор для чтения произведений."""
 
-    rating = serializers.SerializerMethodField()
+    rating = serializers.FloatField(read_only=True)
     category = CategorySerializer(read_only=True)
     genre = GenreSerializer(many=True, read_only=True)
 
@@ -42,11 +39,6 @@ class TitleReadSerializer(serializers.ModelSerializer):
             'id', 'name', 'year',
             'rating', 'description',
             'genre', 'category')
-
-    def get_rating(self, obj):
-        # Вычисление среднего рейтинга
-        avg_rating = obj.reviews.aggregate(Avg('score'))['score__avg']
-        return avg_rating
 
 
 class TitleWriteSerializer(serializers.ModelSerializer):
@@ -72,13 +64,6 @@ class TitleWriteSerializer(serializers.ModelSerializer):
 
     def to_representation(self, instance):
         return TitleReadSerializer(instance).data
-
-    def validate_year(self, data):
-        if data >= datetime.now().year:
-            raise serializers.ValidationError(
-                f'Год {data} превышает текущий!',
-            )
-        return data
 
 
 class ReviewSerializer(serializers.ModelSerializer):
