@@ -12,7 +12,7 @@ USER_ROLES = (
 )
 
 
-class CustomUser(AbstractUser):
+class User(AbstractUser):
     """Класс, описывающий кастомную модель пользователя"""
 
     username = models.CharField(

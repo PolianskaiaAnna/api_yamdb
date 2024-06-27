@@ -1,16 +1,12 @@
-from django.contrib.auth import get_user_model
 from rest_framework import filters, generics, status, viewsets
 from rest_framework.pagination import PageNumberPagination
 from rest_framework.permissions import AllowAny
 from rest_framework.response import Response
 from rest_framework.views import APIView
-from rest_framework.generics import get_object_or_404
-from rest_framework.exceptions import PermissionDenied
 
 from .permissions import IsAdmin, IsAuthenticated
 from users.serializers import SignupSerializer, TokenSerializer, UserSerializer
-# from .models import User
-User = get_user_model()
+from .models import User
 
 
 class SignUpView(APIView):
@@ -74,4 +70,3 @@ class UsersViewSet(viewsets.ModelViewSet):
     pagination_class = PageNumberPagination
     permission_classes = [IsAdmin]
     http_method_names = ["get", "post", "patch", "delete"]
-

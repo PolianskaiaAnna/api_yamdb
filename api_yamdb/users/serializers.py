@@ -1,18 +1,15 @@
 import re
 
 from django.conf import settings
-from django.contrib.auth import get_user_model
 from django.contrib.auth.tokens import default_token_generator
 from django.core.mail import send_mail
 from rest_framework import serializers
 from rest_framework.exceptions import NotFound
 from rest_framework_simplejwt.tokens import AccessToken
 
-# from .models import User
+from .models import User
 LENG_EMAIL = 254
 LENG_USER = 150
-
-User = get_user_model()
 
 
 class SignupSerializer(serializers.ModelSerializer):
@@ -40,9 +37,9 @@ class SignupSerializer(serializers.ModelSerializer):
             )
         if username.lower() == 'me':
             raise serializers.ValidationError('Нельзя использовать имя me')
-    
+
         user_with_email = User.objects.filter(email=email).first()
-        # Проверка на то, что нельзя использовать email, 
+        # Проверка на то, что нельзя использовать email,
         # уже зарегистрированного пользователя
         if user_with_email:
             if user_with_email.username != username:
@@ -52,12 +49,11 @@ class SignupSerializer(serializers.ModelSerializer):
 
         user_with_username = User.objects.filter(username=username).first()
         # Проверка на то, что нельзя использовать занятый юзернейм
-        if user_with_username:            
+        if user_with_username:
             if user_with_username.email != email:
                 raise serializers.ValidationError(
                     'Пользователь с таким именем уже зарегистрирован'
                 )
-  
         return data
 
     def create(self, validated_data):
