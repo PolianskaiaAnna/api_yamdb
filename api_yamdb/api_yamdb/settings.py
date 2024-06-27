@@ -116,6 +116,7 @@ LENG_CUT = 30
 # Email settings
 EMAIL_BACKEND = 'django.core.mail.backends.filebased.EmailBackend'
 EMAIL_FILE_PATH = BASE_DIR / 'sent_emails'
+EMAIL_ADMIN = 'admin@yamdb.yamdb'
 
 # Rest Framework setting
 REST_FRAMEWORK = {

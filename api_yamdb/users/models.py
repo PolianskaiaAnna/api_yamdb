@@ -12,10 +12,8 @@ USER_ROLES = (
 )
 
 
-
 class CustomUser(AbstractUser):
     """Класс, описывающий кастомную модель пользователя"""
-    
 
     username = models.CharField(
         'Имя пользователя',
@@ -36,6 +34,14 @@ class CustomUser(AbstractUser):
         'Роль', choices=USER_ROLES,
         default=USER_ROLES[0][0], max_length=LENG_USER
     )
+
+    class Meta:
+        verbose_name = 'Пользователь'
+        verbose_name_plural = 'Ползователи'
+        ordering = ('username',)
+
+    def __str__(self):
+        return self.username
 
     @property
     def is_admin(self):

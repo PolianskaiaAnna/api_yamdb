@@ -1,5 +1,6 @@
 import re
 
+from django.conf import settings
 from django.contrib.auth import get_user_model
 from django.contrib.auth.tokens import default_token_generator
 from django.core.mail import send_mail
@@ -7,6 +8,7 @@ from rest_framework import serializers
 from rest_framework.exceptions import NotFound
 from rest_framework_simplejwt.tokens import AccessToken
 
+# from .models import User
 LENG_EMAIL = 254
 LENG_USER = 150
 
@@ -36,29 +38,26 @@ class SignupSerializer(serializers.ModelSerializer):
             raise serializers.ValidationError(
                 'Юзернейм содержит недопустимые символы.'
             )
-        if username == 'me':
+        if username.lower() == 'me':
             raise serializers.ValidationError('Нельзя использовать имя me')
-        try:
-            # Проверка на то, что нельзя использовать email,
-            # уже зарегистрированного пользователя
-            user_with_email = User.objects.get(email=email)
+    
+        user_with_email = User.objects.filter(email=email).first()
+        # Проверка на то, что нельзя использовать email, 
+        # уже зарегистрированного пользователя
+        if user_with_email:
             if user_with_email.username != username:
                 raise serializers.ValidationError(
                     'Пользователь с таким email уже зарегистрирован'
                 )
-        except User.DoesNotExist:
-            pass
 
-        try:
-            # Проверка на то, что нельзя использовать занятый юзернейм
-            user_with_username = User.objects.get(username=username)
+        user_with_username = User.objects.filter(username=username).first()
+        # Проверка на то, что нельзя использовать занятый юзернейм
+        if user_with_username:            
             if user_with_username.email != email:
                 raise serializers.ValidationError(
                     'Пользователь с таким именем уже зарегистрирован'
                 )
-        except User.DoesNotExist:
-            pass
-
+  
         return data
 
     def create(self, validated_data):
@@ -85,7 +84,7 @@ class SignupSerializer(serializers.ModelSerializer):
                 f'confirmation code: {confirmation_code}\n'
                 f'username: {user.username}'
             ),
-            from_email='admin@yamdb.yamdb',
+            from_email=settings.EMAIL_ADMIN,
             recipient_list=[user.email],
             fail_silently=False,
         )
