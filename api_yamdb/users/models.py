@@ -3,15 +3,17 @@ from django.conf import settings
 from django.contrib.auth.models import AbstractUser
 
 
-USER_ROLES = (
-    ('user', 'Пользователь'),
-    ('moderator', 'Модератор'),
-    ('admin', 'Админ'),
-)
+
 
 
 class CustomUser(AbstractUser):
     """Класс, описывающий кастомную модель пользователя"""
+    
+    USER_ROLES = (
+    ('user', 'Пользователь'),
+    ('moderator', 'Модератор'),
+    ('admin', 'Админ'),
+)
     username = models.CharField(
         'Имя пользователя',
         max_length=settings.LENG_USER,
