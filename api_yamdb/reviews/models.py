@@ -4,8 +4,7 @@ from django.core.validators import validate_slug
 from django.db import models
 
 from reviews.validators import validation_year, validation_score
-
-User = get_user_model()
+from users.models import User
 
 
 class CategoryAndGenreModel(models.Model):

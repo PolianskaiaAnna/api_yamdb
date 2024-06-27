@@ -8,13 +8,13 @@ from api.views import (
 router_vers1 = routers.DefaultRouter()
 
 router_vers1.register(
-    r'categories', CategoryViewSet, basename='categories'
+    'categories', CategoryViewSet, basename='categories'
 )
 router_vers1.register(
-    r'genres', GenreViewSet, basename='genres'
+    'genres', GenreViewSet, basename='genres'
 )
 router_vers1.register(
-    r'titles', TitleViewSet, basename='titles'
+    'titles', TitleViewSet, basename='titles'
 )
 router_vers1.register(
     r'titles/(?P<title_id>\d+)/reviews', ReviewViewSet, basename='reviews'
