@@ -5,15 +5,18 @@ from django.contrib.auth.models import AbstractUser
 LENG_EMAIL = 254
 LENG_USER = 150
 
-USER_ROLES = (
-    ('user', 'Пользователь'),
-    ('moderator', 'Модератор'),
-    ('admin', 'Админ'),
-)
-
 
 class User(AbstractUser):
     """Класс, описывающий кастомную модель пользователя"""
+    USER = 'user'
+    MODERATOR = 'moderator'
+    ADMIN = 'admin'
+
+    USER_ROLES = (
+        (USER, 'Пользователь'),
+        (MODERATOR, 'Модератор'),
+        (ADMIN, 'Админ'),
+    )
 
     username = models.CharField(
         'Имя пользователя',
@@ -32,7 +35,7 @@ class User(AbstractUser):
     bio = models.TextField('Биография', blank=True,)
     role = models.CharField(
         'Роль', choices=USER_ROLES,
-        default=USER_ROLES[0][0], max_length=LENG_USER
+        default=USER, max_length=LENG_USER
     )
 
     class Meta:
@@ -45,12 +48,12 @@ class User(AbstractUser):
 
     @property
     def is_admin(self):
-        return self.role == USER_ROLES[2][0] or self.is_superuser
+        return self.role == self.ADMIN or self.is_superuser
 
     @property
     def is_moderator(self):
-        return self.role == USER_ROLES[1][0]
+        return self.role == self.MODERATOR
 
     @property
     def is_user(self):
-        return self.role == USER_ROLES[0][0]
+        return self.role == self.USER
