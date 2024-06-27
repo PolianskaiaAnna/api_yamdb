@@ -112,8 +112,6 @@ STATICFILES_DIRS = ((BASE_DIR / 'static/'),)
 LENG_SLUG = 50
 LENG_MAX = 256
 LENG_CUT = 30
-LENG_EMAIL = 254
-LENG_USER = 150
 
 # Email settings
 EMAIL_BACKEND = 'django.core.mail.backends.filebased.EmailBackend'

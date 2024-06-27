@@ -1,6 +1,5 @@
 import re
 
-from django.conf import settings
 from django.contrib.auth import get_user_model
 from django.contrib.auth.tokens import default_token_generator
 from django.core.mail import send_mail
@@ -8,16 +7,19 @@ from rest_framework import serializers
 from rest_framework.exceptions import NotFound
 from rest_framework_simplejwt.tokens import AccessToken
 
+LENG_EMAIL = 254
+LENG_USER = 150
+
 User = get_user_model()
 
 
 class SignupSerializer(serializers.ModelSerializer):
     """Класс, описывающий сериализатор, для проверки нового пользователя"""
     email = serializers.EmailField(
-        max_length=settings.LENG_EMAIL, required=True
+        max_length=LENG_EMAIL, required=True
     )
     username = serializers.CharField(
-        max_length=settings.LENG_USER, required=True
+        max_length=LENG_USER, required=True
     )
 
     class Meta:
@@ -91,8 +93,8 @@ class SignupSerializer(serializers.ModelSerializer):
 
 class TokenSerializer(serializers.Serializer):
     """Сериализатор для выдачи токена"""
-    username = serializers.CharField(max_length=settings.LENG_USER)
-    confirmation_code = serializers.CharField(max_length=settings.LENG_USER)
+    username = serializers.CharField(max_length=LENG_USER)
+    confirmation_code = serializers.CharField(max_length=LENG_USER)
 
     def validate(self, data):
         """ Функция проверяет валидность связки юзернейм+код"""
