@@ -1,3 +1,4 @@
+import os
 from pathlib import Path
 
 
@@ -114,6 +115,8 @@ LENG_MAX = 256
 LENG_CUT = 30
 LENG_EMAIL = 254
 LENG_USER = 150
+
+CSV_FILES_DIR = os.path.join(BASE_DIR, 'static/data')
 
 # Email settings
 EMAIL_BACKEND = 'django.core.mail.backends.filebased.EmailBackend'
