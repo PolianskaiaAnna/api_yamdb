@@ -1,3 +1,4 @@
+import os
 from pathlib import Path
 
 
@@ -11,7 +12,7 @@ DEBUG = True
 
 ALLOWED_HOSTS = ['*']
 
-AUTH_USER_MODEL = 'users.CustomUser'
+AUTH_USER_MODEL = 'users.User'
 
 # Application definition
 
@@ -112,12 +113,13 @@ STATICFILES_DIRS = ((BASE_DIR / 'static/'),)
 LENG_SLUG = 50
 LENG_MAX = 256
 LENG_CUT = 30
-LENG_EMAIL = 254
-LENG_USER = 150
+
+CSV_FILES_DIR = os.path.join(BASE_DIR, 'static/data')
 
 # Email settings
 EMAIL_BACKEND = 'django.core.mail.backends.filebased.EmailBackend'
 EMAIL_FILE_PATH = BASE_DIR / 'sent_emails'
+EMAIL_ADMIN = 'admin@yamdb.yamdb'
 
 # Rest Framework setting
 REST_FRAMEWORK = {

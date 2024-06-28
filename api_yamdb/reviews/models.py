@@ -1,10 +1,11 @@
 from django.contrib.auth import get_user_model
 from django.conf import settings
-from django.core.validators import validate_slug
+from django.core.validators import (
+    validate_slug, MaxValueValidator, MinValueValidator
+)
 from django.db import models
 
-from reviews.validators import validation_year, validation_score
-
+from reviews.validators import validation_year
 User = get_user_model()
 
 
@@ -73,7 +74,7 @@ class Title(models.Model):
         max_length=settings.LENG_MAX,
         db_index=True,
     )
-    year = models.IntegerField(
+    year = models.SmallIntegerField(
         'Год выпуска',
         db_index=True,
         validators=(validation_year,),
@@ -103,9 +104,12 @@ class Review(models.Model):
         on_delete=models.CASCADE,
         related_name='reviews',
     )
-    score = models.PositiveIntegerField(
+    score = models.PositiveSmallIntegerField(
         'Оценка',
-        validators=(validation_score,),
+        validators=(
+            MinValueValidator(1, message='Оценка не может быть ниже 1'),
+            MaxValueValidator(10, message='Оценка не может быть выше 10')
+        ),
     )
     pub_date = models.DateField(
         'Дата публикации',
