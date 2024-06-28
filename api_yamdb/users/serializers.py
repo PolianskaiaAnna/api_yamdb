@@ -8,6 +8,7 @@ from rest_framework.exceptions import NotFound
 from rest_framework_simplejwt.tokens import AccessToken
 
 from .models import User
+
 LENG_EMAIL = 254
 LENG_USER = 150
 
