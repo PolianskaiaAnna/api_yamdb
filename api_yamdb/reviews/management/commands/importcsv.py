@@ -8,7 +8,7 @@ from reviews.models import Category, Comment, Genre, Review, Title, User
 
 
 class Command(BaseCommand):
-    help = 'Fills the database with data from csv-file in static folder'
+    help = 'Импорт данных csv из /static/data/ в базу данных.'
 
     def handle(self, *args, **kwargs):
         CSV_DIR = Path('static', 'data')
