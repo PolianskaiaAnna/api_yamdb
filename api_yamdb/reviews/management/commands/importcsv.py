@@ -38,7 +38,7 @@ class Command(BaseCommand):
                                           ignore_conflicts=True)
                 self.stdout.write(
                     f'Данные из файла {file} импортированы')
-                
+
         self.stdout.write(self.style.SUCCESS(
             'Все данные загружены из csv файлов загружены в базу')
         )
