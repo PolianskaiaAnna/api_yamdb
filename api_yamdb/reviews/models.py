@@ -1,5 +1,4 @@
 from django.contrib.auth import get_user_model
-from django.conf import settings
 from django.core.validators import (
     validate_slug, MaxValueValidator, MinValueValidator
 )
@@ -9,18 +8,23 @@ from reviews.validators import validation_year
 User = get_user_model()
 
 
+LENG_MAX = 256
+LENG_SLUG = 50
+LENG_CUT = 30
+
+
 class CategoryAndGenreModel(models.Model):
     """Абстрактная модель. Добавляет название и слаг."""
 
     slug = models.SlugField(
         'Slug',
-        max_length=settings.LENG_SLUG,
+        max_length=LENG_SLUG,
         unique=True,
         validators=[validate_slug],
     )
     name = models.CharField(
         'Название',
-        max_length=settings.LENG_MAX,
+        max_length=LENG_MAX,
     )
 
     class Meta:
@@ -28,7 +32,7 @@ class CategoryAndGenreModel(models.Model):
         ordering = ('name',)
 
     def __str__(self):
-        return self.name[:settings.LENG_CUT]
+        return self.name[:LENG_CUT]
 
 
 class Category(CategoryAndGenreModel):
@@ -61,7 +65,7 @@ class Title(models.Model):
     description = models.TextField(
         'Описание',
         db_index=True,
-        max_length=settings.LENG_MAX,
+        max_length=LENG_MAX,
         blank=True,
     )
     genre = models.ManyToManyField(
@@ -71,7 +75,7 @@ class Title(models.Model):
     )
     name = models.CharField(
         'Название',
-        max_length=settings.LENG_MAX,
+        max_length=LENG_MAX,
         db_index=True,
     )
     year = models.SmallIntegerField(
@@ -123,7 +127,7 @@ class Review(models.Model):
         unique_together = ['title_id', 'author_id']
 
     def __str__(self):
-        return self.text[:settings.LENG_CUT]
+        return self.text[:LENG_CUT]
 
 
 class Comment(models.Model):
@@ -153,4 +157,4 @@ class Comment(models.Model):
         ordering = ('-pub_date',)
 
     def __str__(self):
-        return self.text[:settings.LENG_CUT]
+        return self.text[:LENG_CUT]

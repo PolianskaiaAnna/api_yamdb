@@ -110,10 +110,6 @@ STATIC_URL = '/static/'
 
 STATICFILES_DIRS = ((BASE_DIR / 'static/'),)
 
-LENG_SLUG = 50
-LENG_MAX = 256
-LENG_CUT = 30
-
 CSV_FILES_DIR = os.path.join(BASE_DIR, 'static/data')
 
 # Email settings
